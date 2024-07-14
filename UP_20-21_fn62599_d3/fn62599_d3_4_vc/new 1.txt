@@ -1,0 +1,72 @@
+#include <iostream>
+ 
+ 
+int strlen(char *s) {
+    int size = 0;
+    char *p = s;
+    while (*p != '\0') {
+        p ++;
+        size ++;
+    }
+    return size;
+} 
+ 
+char *getSubset(char *text, int start) { 
+    
+    char *result = (char*)malloc(sizeof(char) * (strlen(text) -  start + 1));
+    char *rIterator = result;
+    for (char *p = text; p <= (text + strlen(text)); p ++) {
+        if ((p-text) > start) {
+            *rIterator = *p;
+            rIterator ++;
+        }
+    }
+    
+    return result;
+}
+ 
+void uniqueSubsets(char *text, int &subsets){ // The main stuff is happening here
+    
+ 
+    
+    bool format[strlen(text)] = {};
+    bool used[256] = {};
+    for (char *p = text; *p != '\0'; p ++) {
+        
+        if (used[*p + 128])
+            format[p - text] = false;
+        else
+            format[p - text] = true;
+        used[*p + 128] = true;
+        
+    }
+ 
+    
+    for (char *p = text; *p != '\0'; p ++) {
+        
+        if(format[p - text]) {
+            subsets ++;
+            char *newText = getSubset(text, p - text);
+            
+            uniqueSubsets(newText, subsets);
+        } 
+    }
+    free(text);
+    
+}
+ 
+int getAllUniqueSubsets(char *text) {
+    int subsets = 0;
+    uniqueSubsets(text, subsets);
+    return subsets;
+}
+ 
+int main () {
+    char input[101];
+    
+    std :: cin >> input;
+    
+        
+    std :: cout  << getAllUniqueSubsets(input) << "\n";
+    return 0;
+}
